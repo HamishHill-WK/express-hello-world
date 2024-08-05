@@ -1,38 +1,27 @@
 const express = require("express");
 const app = express();
-const io = require('socket.io');
+const { Server } = require("socket.io");
 const port = process.env.PORT || 3001;
 
 app.get("/", (req, res) => res.type('html').send(html));
 app.use(express.static('public'));
 
-const players = {};
+//const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-io.on('connection', (socket) => {
+const io = new Server();
+
+io.attachApp(app);
+
+io.on("connection", (socket) => {
   console.log('A user connected');
 
-  players[socket.id] = {
-    position: { x: 0, y: 0, z: 5 },
-    rotation: { x: 0, y: 0, z: 0 }
-  };
-
-  socket.emit('currentPlayers', players);
-  socket.broadcast.emit('newPlayer', players[socket.id]);
-
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
-    delete players[socket.id];
-    io.emit('playerDisconnected', socket.id);
-  });
-
-  socket.on('playerMovement', (movementData) => {
-    players[socket.id].position = movementData.position;
-    players[socket.id].rotation = movementData.rotation;
-    socket.broadcast.emit('playerMoved', players[socket.id]);
-  });
 });
 
-const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(3000, (token) => {
+  if (!token) {
+    console.warn("port already in use");
+  }
+});
 
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;

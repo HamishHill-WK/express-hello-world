@@ -10,7 +10,7 @@ const { Server } = require("socket.io");
 
 const io = new Server();
 
-io.on("connection", (socket) => {
+io.on('connection', (socket) => {
   console.log('A user connected');
     socket.emit("hello", "world");
 });

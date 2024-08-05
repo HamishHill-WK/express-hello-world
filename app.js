@@ -1,8 +1,36 @@
 const express = require("express");
 const app = express();
+const io = require('socket.io')(http);
 const port = process.env.PORT || 3001;
 
 app.get("/", (req, res) => res.type('html').send(html));
+app.use(express.static('public'));
+
+const players = {};
+
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  players[socket.id] = {
+    position: { x: 0, y: 0, z: 5 },
+    rotation: { x: 0, y: 0, z: 0 }
+  };
+
+  socket.emit('currentPlayers', players);
+  socket.broadcast.emit('newPlayer', players[socket.id]);
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+    delete players[socket.id];
+    io.emit('playerDisconnected', socket.id);
+  });
+
+  socket.on('playerMovement', (movementData) => {
+    players[socket.id].position = movementData.position;
+    players[socket.id].rotation = movementData.rotation;
+    socket.broadcast.emit('playerMoved', players[socket.id]);
+  });
+});
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

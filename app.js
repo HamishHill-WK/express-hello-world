@@ -1,10 +1,10 @@
-const express = require("express");
-const app = express();
+//const express = require("express");
+//const app = express();
 const { Server } = require("socket.io");
-const port = process.env.PORT || 3001;
+//const port = process.env.PORT || 3001;
 
-app.get("/", (req, res) => res.type('html').send(html));
-app.use(express.static('public'));
+//app.get("/", (req, res) => res.type('html').send(html));
+//app.use(express.static('public'));
 
 //const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
@@ -12,14 +12,18 @@ const io = new Server();
 
 io.on("connection", (socket) => {
   console.log('A user connected');
-
+    socket.emit("hello", "world");
 });
 
-app.listen(3000);
+io.listen(3000);
 
-/*
-server.keepAliveTimeout = 120 * 1000;
-server.headersTimeout = 120 * 1000;
+console.log("hello ");
+
+//app.listen(3000);
+
+
+//server.keepAliveTimeout = 120 * 1000;
+//server.headersTimeout = 120 * 1000;
 
 const html = `
 <!DOCTYPE html>
@@ -71,4 +75,3 @@ const html = `
   </body>
 </html>
 `
-*/

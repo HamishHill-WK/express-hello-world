@@ -10,19 +10,14 @@ app.use(express.static('public'));
 
 const io = new Server();
 
-io.attachApp(app);
-
 io.on("connection", (socket) => {
   console.log('A user connected');
 
 });
 
-app.listen(3000, (token) => {
-  if (!token) {
-    console.warn("port already in use");
-  }
-});
+app.listen(3000);
 
+/*
 server.keepAliveTimeout = 120 * 1000;
 server.headersTimeout = 120 * 1000;
 
@@ -76,3 +71,4 @@ const html = `
   </body>
 </html>
 `
+*/

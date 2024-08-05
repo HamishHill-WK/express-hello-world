@@ -25,8 +25,14 @@
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
-            <script>
-        const socket = io();
-        </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', (event) => {
+      const socket = io();
+      socket.on('connect', () => {
+        console.log('Connected to server');
+        // Add any client-side logic here
+      });
+    });
+  </script>
     </body>
 </html>

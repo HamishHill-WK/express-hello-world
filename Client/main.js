@@ -2,15 +2,29 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import axios from "axios";
+const cors = require('cors');
+const corsOptions ={
+	origin:["http://localhost:5173"],
+  };
+  
+  app.use(cors(corsOptions));
+  
+let data;
 
 const fetchAPI = async () =>{
-	const response = await axios.get("http://localhost:8080/api");
-
-	console.log(response.data.fruits);
-
+	const response = await axios.get("https://express-hello-world-1-o7v2.onrender.com/api");
+	data = response.data.fruits;
+	console.log(data);
 }
 
 fetchAPI();
+
+data = {fruits: [ "coconut", "pear", "peach"]};
+
+app.get("/api", (req, res) => {
+	res.json(data);
+});
+
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );

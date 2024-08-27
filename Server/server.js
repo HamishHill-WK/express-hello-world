@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-import axios from "axios";
+const axios = require('axios');
+
 const fetchAPI = async () =>{
 	const response = await axios.get("https://express-hello-world-1-o7v2.onrender.com/api");
 

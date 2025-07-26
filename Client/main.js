@@ -2,29 +2,38 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import axios from "axios";
-const cors = require('cors');
-const corsOptions ={
-	origin:["http://localhost:5173"],
-  };
-  
-  app.use(cors(corsOptions));
-  
-let data;
+
+let dataStore = {};
 
 const fetchAPI = async () =>{
-	const response = await axios.get("https://express-hello-world-1-o7v2.onrender.com/api");
-	data = response.data.fruits;
-	console.log(data);
+	const response = await axios.get("http://localhost:8080/api");
+
+	dataStore = response.data.fruits;
+
+	dataStore.push("pear");
+
+	console.log(response.data.fruits);
+
+	sendData();
 }
 
 fetchAPI();
 
-data = {fruits: [ "coconut", "pear", "peach"]};
-
-app.get("/api", (req, res) => {
-	res.json(data);
-});
-
+const sendData = async () => {
+	try {
+	  //const data = { firstName: 'Fred', lastName: 'Flintstone' };
+	  const response = await axios.post('http://localhost:8080/api/endpoint', dataStore, {
+		headers: {
+		  'Content-Type': 'application/json'
+		}
+	  });
+	  console.log('Response:', response.data);
+	} catch (error) {
+	  console.error('Error:', error.response ? error.response.data : error.message);
+	}
+  };
+  
+  //sendData();
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -49,7 +58,6 @@ scene.add( cube );
 scene.add( controls.getObject() );
 
 camera.position.z = 5;
-camera1.position.z = -5;
 
 addEventListener( 'click', function () {
 	controls.lock();
@@ -69,24 +77,6 @@ addEventListener('keydown', function(event) {
 	}
 	if(key === "s"){
 		yRotation += 0.025;
-	}
-
-	if(key === "r"){
-
-		console.log("r");
-
-		if(currentCam === camera){
-			console.log("r cam ");
-
-			currentCam = camera1;
-		}
-		if(currentCam === camera1){
-			console.log("r cam 1");
-
-			currentCam = camera1;
-		}
-
-		controls = new PointerLockControls( currentCam, document.body );
 	}
 });
 
